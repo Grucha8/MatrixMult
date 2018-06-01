@@ -1,0 +1,80 @@
+#define N 64
+
+@test
+subroutine onexoneTest()
+    use mult
+    use pfunit_mod
+    implicit none
+    real (kind=8) :: m1(1,1), m2(1,1), m3(1,1)
+    integer :: status
+
+    m1 = 2
+    m2 = 8
+
+    call mm(m1, m2, m3, status)
+    @assertEqual(m3(1,1), 16)
+end subroutine
+
+@test
+subroutine onexNTest()
+    use pfunit_mod
+    use mult
+    implicit none
+    real (kind=8) :: m1(1, N), m2(N, 1), m3(1, 1)
+    integer :: status
+
+    m1 = 2
+    m2 = 3
+
+    call mm(m1, m2, m3, status)
+    @assertEqual(m3(1,1), (2*3*N))
+end subroutine
+
+@test
+subroutine nxOneTest()
+    use pfunit_mod
+    use mult
+    implicit none
+    real (kind=8) :: m1(N, 1), m2(1, N), m3(N, N), mt(N, N)
+    integer :: status
+
+    m1 = 2
+    m2 = 3
+    mt = 6
+
+    call mm(m1, m2, m3, status)
+    @assertEqual(m3, mt)
+
+end subroutine
+
+@test
+subroutine bigMatrixTest()
+    use mult
+    use pfunit_mod
+    implicit none
+    real (kind=8) :: m1(N, N), m2(N, N), m3(N, N), mt(N,N)
+    integer :: status
+
+    m1 = 2
+    m2 = 3
+    mt = 2*3*N
+    call mm(m1, m2, m3, status)
+
+    @assertEqual(m3, mt)
+end subroutine
+
+@test
+subroutine standardTest()
+    use mult
+    use pfunit_mod
+    implicit none
+    real (kind = 8) :: m1(2, 3), m2(3, 2), m3(3, 3), mt(3, 3)
+    integer :: status
+
+    m1 = resahpe(/1,2,3,4,5,6/, [2,3])
+    m2 = resahpe(/1,2,3,4,5,6/, [3,2])
+    mt = resahpe(/9, 12, 15, 19, 26, 33, 29, 40, 51/, [3,3])
+
+    call mm(m1, m2, m3, status)
+    @assertEqual(m3, mt)
+end subroutine
